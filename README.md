@@ -31,6 +31,7 @@ the storage while also providing strong isolation and consistency guarantees.
 #### 2. Execution
 
 #### 3. Storage (storesvc)
+
 The storage service (storesvc) takes a key and a request type, and returns a value.
 Multiple keys can be passed at once for requests that only take a key as input.
  - Request type: GET
@@ -54,9 +55,11 @@ Multiple keys can be passed at once for requests that only take a key as input.
 `content` is the content to store in, or is retrieved from, and object.
 
 #### 4. Authentication/Authorization (AuthN+Z or authnz)
+
 Since everything is networked, all requests must be authorized.
  - Use some equivalent to a Bearer Token to authorize requests.
  - A service will be dedicated to authenticating a request and returning an authorization token.
  - Each other service will accept an authorization token and verify with the authnz service that the token is valid.
  - The authnz service will return a blob that says what the token is allowed to do (scopes).
  - The service will match a request type against the blob and return an error if the request type is not allowed.
+
