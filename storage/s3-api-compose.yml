@@ -1,0 +1,44 @@
+version: '3'
+services:
+
+  s3-api:
+    #image: s3-api:latest
+    build:
+      context: s3_api
+      dockerfile: Dockerfile
+      args:
+        - HTTP_PROXY
+        - NO_PROXY
+    ports:
+      - "7654:7654"
+    volumes:
+      - ./s3_api/:/app/s3_api/
+      - ./minio/certs/public.crt:/etc/ssl/certs/minio-s3.crt
+      - ./minio/certs/CAs/ca.crt:/etc/ssl/certs/minio-s3-ca.crt
+      - ./minio/certs/bundle.crt:/etc/ssl/certs/minio-s3-bundle.crt
+    environment:
+      FLASK_ADDRESS: "0.0.0.0"
+      FLASK_PORT:    "7654"
+      S3_ENDPOINT:   "s3:9000"
+      S3_BUCKET:     "test-bucket-1"
+      S3_ACCESS_KEY: "minio_access_key"
+      S3_SECRET_KEY: "minio_secret_key"
+      DEBUG:
+      SSL_CERT_FILE: "/etc/ssl/certs/minio-s3-bundle.crt"
+      SSL_CA_FILE:   "/etc/ssl/certs/minio-s3-ca.crt"
+    working_dir: /app/
+    command: /app/s3_api/s3-api.sh
+
+  s3:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+    volumes:
+      - minio-storage:/data
+      - ./minio/:/root/.minio
+    environment:
+      MINIO_ACCESS_KEY:     "minio_access_key"
+      MINIO_SECRET_KEY:     "minio_secret_key"
+    command: server --certs-dir /root/.minio/certs --address ":9000" --console-address ":9001" /data
+volumes:
+  minio-storage:
