@@ -1,31 +1,36 @@
 #!/usr/bin/env sh
 set -eu
+[ "${DEBUG:-0}" = "1" ] && set -x
 
 DB_FILE="${DB_FILE:-authns.db}"
 SCHEMA_FILE="${SCHEMA_FILE:-schema-sqlite3.sql}"
 
 _err () { echo "$0: Error: $*" ; exit 1 ; }
+
 _cmd_load_schema () {
     schemafile="${1:-$SCHEMA_FILE}"
     sqlite3 "$DB_FILE" < "$schemafile"
 }
+
 _cmd_drop_table () {
     table="$1"; shift
     printf "DROP TABLE %s\n" "$table" \
         | sqlite3 "$DB_FILE"
 }
+
+AUTHNS_DB_TABLE_USERS="user"
 _cmd_user () {
     cmd="$1"; shift ; "_cmd_user_$cmd" "$@"
 }
 _cmd_user_get () {
     userid="$1"; shift
-    printf "SELECT id, username, password, email FROM users WHERE username = '%s'\n" \
+    printf "SELECT id, username, password, email FROM ${AUTHNS_DB_TABLE_USERS} WHERE username = '%s'\n" \
         "$userid" \
         | sqlite3 "$DB_FILE" -cmd ".mode json"
 }
 _cmd_user_auth () {
     userid="$1" pass="$2" ; shift 2
-    dbpass="$(printf "SELECT password FROM user WHERE username = '%s'\n" "$userid" \
+    dbpass="$(printf "SELECT password FROM ${AUTHNS_DB_TABLE_USERS} WHERE username = '%s'\n" "$userid" \
         | sqlite3 "$DB_FILE")"
     if [ ! "$dbpass" = "$pass" ] ; then
         _err "password does not match"
@@ -42,7 +47,7 @@ _cmd_user_create () {
         esac
     done
     shift $((OPTIND-1))
-    printf "INSERT INTO user (username, name, email, password) VALUES ('%s', '%s', '%s', '%s')\n" \
+    printf "INSERT INTO ${AUTHNS_DB_TABLE_USERS} (username, name, email, password) VALUES ('%s', '%s', '%s', '%s')\n" \
         "$userid" "$name" "$email" "$pass" \
     | sqlite3 "$DB_FILE"
 }
