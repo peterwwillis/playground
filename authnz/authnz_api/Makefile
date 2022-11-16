@@ -1,5 +1,6 @@
 
-DOCKER_IMAGE_NAME := authnz-api:latest
+APP_NAME := $(shell sh -c 'basename $$(pwd)')
+VENV := ../venv-$(APP_NAME)
 
 all: pip format lint
 
@@ -8,22 +9,23 @@ clean: venv-clean py-clean
 venv:
 	command -v virtualenv || \
         pip3 install virtualenv
-	[ -d venv ] || virtualenv venv
+	[ -d $(VENV) ] || virtualenv $(VENV)
 
 venv-clean:
-	rm -rf venv
+	rm -rf $(VENV)
 
 pip: venv
-	. ./venv/bin/activate ; pip3 install -r requirements.txt
+	. $(VENV)/bin/activate ; pip3 install -r requirements.txt
 
 py-clean:
 	rm -rf __pycache__
 
 format:
-	. ./venv/bin/activate ; black *.py
+	. $(VENV)/bin/activate ; black *.py
 
 lint:
-	. ./venv/bin/activate ; flake8 *.py
+	. $(VENV)/bin/activate ; flake8 *.py
 
+DOCKER_IMAGE_NAME := $(APP_NAME):latest
 docker-build:
 	docker build -t $(DOCKER_IMAGE_NAME) .

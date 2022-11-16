@@ -1,5 +1,5 @@
-test: test-authns-db
+test: test-authnz-db
 
-test-authns-db:
+test-authnz-db:
 	export PATH="$$( cd "$$(dirname "$$(pwd)")" && pwd -P ):$$PATH" ; \
-    for i in *-authns-db-*.sh ; do ./$$i ; done
+    for i in *-authnz-db-*.sh ; do ./$$i ; done

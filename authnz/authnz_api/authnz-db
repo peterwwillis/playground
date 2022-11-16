@@ -2,7 +2,7 @@
 set -eu
 [ "${DEBUG:-0}" = "1" ] && set -x
 
-DB_FILE="${DB_FILE:-authns.db}"
+DB_FILE="${DB_FILE:-authnz.db}"
 SCHEMA_FILE="${SCHEMA_FILE:-schema-sqlite3.sql}"
 
 _err () { echo "$0: Error: $*" ; exit 1 ; }

@@ -7,52 +7,22 @@ services:
       context: authnz_api
       dockerfile: Dockerfile
       args:
+        - APP_NAME=authnz_api
         - HTTP_PROXY
         - NO_PROXY
     ports:
       - "7652:7652"
     volumes:
-      - ./authnz_api/:/app/authnz_api/
+      - ./authnz_api/:/app/authnz_api/:ro
       - ./lldap/certs/public.crt:/etc/ssl/certs/lldap-s3.crt
       - ./lldap/certs/CAs/ca.crt:/etc/ssl/certs/lldap-s3-ca.crt
       - ./lldap/certs/bundle.crt:/etc/ssl/certs/lldap-s3-bundle.crt
     environment:
-      FLASK_ADDRESS: "0.0.0.0"
-      FLASK_PORT:    "7652"
+      LISTEN_ADDRESS: "0.0.0.0"
+      LISTEN_PORT:    "7652"
       DEBUG:
       SSL_CERT_FILE: "/etc/ssl/certs/lldap-s3-bundle.crt"
       SSL_CA_FILE:   "/etc/ssl/certs/lldap-s3-ca.crt"
-    working_dir: /app/
+    working_dir: /app/authnz_api
     command: /app/authnz_api/authnz-api.sh
-
-  lldap:
-    image: nitnelave/lldap:stable
-    ports:
-      # For LDAP
-      - "3890:3890"
-      # For LDAPS
-      - "6360:6360"
-      # For the web front-end
-      - "17170:17170"
-    volumes:
-      - "lldap-data:/data"
-    environment:
-      #- UID=####
-      #- GID=####
-      #- TZ=####/####
-      - LLDAP_JWT_SECRET=my-random-jwt-secret
-      - LLDAP_LDAP_USER_PASS=my-random-user-password
-      - LLDAP_LDAP_BASE_DN=dc=example,dc=com
-    depends_on:
-      - populate-lldap-data
-
-  populate-lldap-data:
-    image: busybox
-    volumes:
-      - "./lldap/:/local-data"
-      - "lldap-data:/data"
-    command: "sh -c 'cp -va /local-data/* /data/'"
-
-volumes:
-  lldap-data:
 

@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 set -eux
 
-authns-db drop_table user || true
+authnz-db drop_table user || true

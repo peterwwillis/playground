@@ -1,5 +1,7 @@
 flask
 flask-login
 flask-wtf
+email_validator
 flake8
 black
+gunicorn

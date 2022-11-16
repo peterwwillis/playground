@@ -11,12 +11,17 @@ ARG NO_PROXY
 ENV NO_PROXY=$NO_PROXY
 ENV no_proxy=$NO_PROXY
 
-WORKDIR /app/
+ARG APP_NAME
+ENV APP_NAME=$APP_NAME
 
-COPY requirements.txt Makefile /app/
+RUN [ -n "${APP_NAME:-}" ] || { echo "ERROR: You must pass APP_NAME as a build arg to this Docker container" ; exit 1 ; }
+
+WORKDIR /app/${APP_NAME}
+
+COPY requirements.txt Makefile /app/${APP_NAME}/
 
 #RUN apk add --allow-untrusted --repository http://dl-cdn.alpinelinux.org/alpine/v3.16/main \
 
-RUN apk add \
+RUN env | sort ; apk add \
         curl make \
     && make venv pip
