@@ -21,10 +21,10 @@ py-clean:
 	rm -rf __pycache__
 
 format:
-	. $(VENV)/bin/activate ; black *.py
+	. $(VENV)/bin/activate ; black
 
 lint:
-	. $(VENV)/bin/activate ; flake8 *.py
+	. $(VENV)/bin/activate ; flake8
 
 DOCKER_IMAGE_NAME := $(APP_NAME):latest
 docker-build:

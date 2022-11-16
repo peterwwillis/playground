@@ -1,20 +1,15 @@
-from flask_login import (
-    LoginManager,
-    # current_user,
-    login_required,
-    login_user,
-    logout_user,
-)
+#from flask_login import (
+#    LoginManager,
+#    # current_user,
+#    login_required,
+#    login_user,
+#    logout_user,
+#)
 
 # import forms
 # forms import LoginForm
 #from forms import LoginForm
 #from user import User
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
 
 
 #def application(env, start_response):

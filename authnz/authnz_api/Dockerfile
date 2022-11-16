@@ -25,3 +25,7 @@ COPY requirements.txt Makefile /app/${APP_NAME}/
 RUN env | sort ; apk add \
         curl make \
     && make venv pip
+
+# Add authnz-db to the path
+ENV PATH=/app/${APP_NAME}:$PATH
+

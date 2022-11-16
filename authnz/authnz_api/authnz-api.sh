@@ -23,6 +23,6 @@ exec "$venv/bin/gunicorn" \
     -b "$LISTEN_ADDRESS:$LISTEN_PORT" \
     --reload \
     --preload \
-    "wsgi" \
+    "app:run()" \
     "$@"
 
