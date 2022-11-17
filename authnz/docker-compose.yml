@@ -17,6 +17,7 @@ services:
       - ./lldap/certs/public.crt:/etc/ssl/certs/lldap-s3.crt
       - ./lldap/certs/CAs/ca.crt:/etc/ssl/certs/lldap-s3-ca.crt
       - ./lldap/certs/bundle.crt:/etc/ssl/certs/lldap-s3-bundle.crt
+      - authnz-db:/db:ro
     environment:
       LISTEN_ADDRESS: "0.0.0.0"
       LISTEN_PORT:    "7652"
@@ -24,5 +25,7 @@ services:
       SSL_CERT_FILE: "/etc/ssl/certs/lldap-s3-bundle.crt"
       SSL_CA_FILE:   "/etc/ssl/certs/lldap-s3-ca.crt"
     working_dir: /app/authnz_api
-    command: /app/authnz_api/authnz-api.sh
+    command: "cp /db/authnz.db /app/authnz_api/authnz.db ; /app/authnz_api/authnz-api.sh"
+    depends_on:
+      - populate-authnz-api-db
 

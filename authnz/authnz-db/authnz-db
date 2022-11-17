@@ -22,15 +22,31 @@ AUTHNS_DB_TABLE_USERS="user"
 _cmd_user () {
     cmd="$1"; shift ; "_cmd_user_$cmd" "$@"
 }
+_cmd_user_token () {
+    cmd="$1"; shift ; "_cmd_user_token_$cmd" "$@"
+}
+_cmd_user_token_get () {
+    token="$1"; shift
+    printf "SELECT * FROM ${AUTHNS_DB_TABLE_USERS} WHERE token = '%s'\n" \
+        "$token" \
+        | sqlite3 "$DB_FILE" -cmd ".mode json"
+}
+_cmd_user_token_update () {
+    user="$1" token="$2" token_expiration="$3" ; shift 3
+    #token_expiration="${3:-3600}"
+    printf "UPDATE ${AUTHNS_DB_TABLE_USERS} SET token = '%s', token_expiration = '%s' WHERE user_id = '%s'\n" \
+        "$user" "$token" "$token_expiration" \
+        | sqlite3 "$DB_FILE" -cmd ".mode json"
+}
 _cmd_user_get () {
     userid="$1"; shift
-    printf "SELECT id, username, password, email FROM ${AUTHNS_DB_TABLE_USERS} WHERE username = '%s'\n" \
+    printf "SELECT * FROM ${AUTHNS_DB_TABLE_USERS} WHERE user_id = '%s'\n" \
         "$userid" \
         | sqlite3 "$DB_FILE" -cmd ".mode json"
 }
 _cmd_user_auth () {
     userid="$1" pass="$2" ; shift 2
-    dbpass="$(printf "SELECT password FROM ${AUTHNS_DB_TABLE_USERS} WHERE username = '%s'\n" "$userid" \
+    dbpass="$(printf "SELECT password FROM ${AUTHNS_DB_TABLE_USERS} WHERE user_id = '%s'\n" "$userid" \
         | sqlite3 "$DB_FILE")"
     if [ ! "$dbpass" = "$pass" ] ; then
         _err "password does not match"
@@ -47,7 +63,7 @@ _cmd_user_create () {
         esac
     done
     shift $((OPTIND-1))
-    printf "INSERT INTO ${AUTHNS_DB_TABLE_USERS} (username, name, email, password) VALUES ('%s', '%s', '%s', '%s')\n" \
+    printf "INSERT INTO ${AUTHNS_DB_TABLE_USERS} (user_id, name, email, password) VALUES ('%s', '%s', '%s', '%s')\n" \
         "$userid" "$name" "$email" "$pass" \
     | sqlite3 "$DB_FILE"
 }
@@ -60,6 +76,8 @@ Commands:
     load_schema [FILE]
     drop_table TABLE
     user get USER
+    user token get TOKEN
+    user token update USER TOKEN EXPIRATION
     user auth USER PASS
     user create -u USER -n NAME -e EMAIL -p PASS
 EOUSAGE
