@@ -1,11 +1,14 @@
 
 APP_NAME := $(shell sh -c 'basename $$(pwd)')
 
-.PHONY: tests docker-build clean db-clean
+.PHONY: shellcheck tests docker-build clean db-clean
 
-all: tests docker-build
+all: shellcheck tests docker-build
 
 clean: db-clean
+
+shellcheck:
+	shellcheck $(APP_NAME)
 
 tests:
 	make -C tests

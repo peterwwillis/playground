@@ -54,12 +54,13 @@ _cmd_user_auth () {
     return 0
 }
 _cmd_user_create () {
-    while getopts "u:n:e:p:" args ; do
+    while getopts "u:n:e:p:t:" args ; do
         case "$args" in
             u)  userid="$OPTARG" ;;
             n)  name="$OPTARG" ;;
             e)  email="$OPTARG" ;;
             p)  pass="$OPTARG" ;;
+            *)  _err "Invalid arg: $OPTARG" ; exit 1 ;;
         esac
     done
     shift $((OPTIND-1))

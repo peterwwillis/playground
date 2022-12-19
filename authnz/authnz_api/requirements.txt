@@ -1,7 +1,9 @@
 flask
 flask-login
+flask-httpauth
 flask-wtf
 email_validator
 flake8
 black
+inotify
 gunicorn

@@ -24,14 +24,17 @@ class User(UserMixin):
         if user_id is not None:        
             res = run_authnz_db(["authnz-db", "user", "get", user_id])
             js = json.loads(res.stdout)
-            return User().populate(js)
+            print("js: '%s'" % js, file=sys.stderr)
+            foo = User().populate(js[0])
+            print("foo: '%s'" % foo, file=sys.stderr)
+            return foo
 
         # get user_id from token
         if token is not None:
             print("Getting user from token '%s'" % token, file=sys.stderr)
             res = run_authnz_db(["authnz-db","user","token","get",token])
             js = json.loads(res.stdout)
-            return User().populate(js)
+            return User().populate(js[0])
 
         raise Exception("You must pass either user_id or token")
 
@@ -54,6 +57,7 @@ class User(UserMixin):
 #        return self
 
     def populate(self, obj):
+        print("populate: '%s'" % obj, file=sys.stderr)
         if 'user_id' in obj and obj['user_id'] is not None:
             self.user_id = obj['user_id']
         if 'name' in obj and obj['name'] is not None:
@@ -66,6 +70,7 @@ class User(UserMixin):
             self.token = obj['token']
         if 'token_expiration' in obj and obj['token_expiration'] is not None:
             self.token_expiration = obj['token_expiration']
+        return self
 
     def get_token(self, expires_in=3600):
         now = datetime.utcnow()
@@ -83,7 +88,7 @@ class User(UserMixin):
 
     @staticmethod
     def check_token(token):
-        user = User().get(token=token)
+        user = User.get(token=token)
         if user is None or user.token_expiration < datetime.utcnow():
             return None
         return user

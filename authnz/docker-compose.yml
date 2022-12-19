@@ -10,6 +10,7 @@ services:
         - APP_NAME=authnz_api
         - HTTP_PROXY
         - NO_PROXY
+      target: base-deps
     ports:
       - "7652:7652"
     volumes:
@@ -17,15 +18,45 @@ services:
       - ./lldap/certs/public.crt:/etc/ssl/certs/lldap-s3.crt
       - ./lldap/certs/CAs/ca.crt:/etc/ssl/certs/lldap-s3-ca.crt
       - ./lldap/certs/bundle.crt:/etc/ssl/certs/lldap-s3-bundle.crt
-      - authnz-db:/db:ro
+      - authnz-db:/db
+    environment:
+      SERVER_NAME:    "foobar.localdomain"
+      LISTEN_ADDRESS: "0.0.0.0"
+      LISTEN_PORT:    "7652"
+      DEBUG:
+      SSL_CERT_FILE: "/etc/ssl/certs/lldap-s3-bundle.crt"
+      SSL_CA_FILE:   "/etc/ssl/certs/lldap-s3-ca.crt"
+      DB_FILE:       "/db/authnz.db"
+      WORKERS_NUM:   "4"
+      THREADS_NUM:   "1"
+    working_dir: /app/authnz_api
+    command: "/app/authnz_api/authnz-api.sh"
+    depends_on:
+      - populate-db
+
+  populate-db:
+    #image: authnz-api:latest
+    build:
+      context: authnz_api
+      dockerfile: Dockerfile
+      args:
+        - APP_NAME=authnz-db
+        - HTTP_PROXY
+        - NO_PROXY
+    volumes:
+      - ./authnz_api/:/app/authnz_api/:ro
+      - authnz-db:/db
     environment:
       LISTEN_ADDRESS: "0.0.0.0"
       LISTEN_PORT:    "7652"
       DEBUG:
       SSL_CERT_FILE: "/etc/ssl/certs/lldap-s3-bundle.crt"
       SSL_CA_FILE:   "/etc/ssl/certs/lldap-s3-ca.crt"
+      DB_FILE:       "/db/authnz.db"
+      SCHEMA_FILE:   "/app/authnz_api/authnz-db/schema-sqlite3.sql"
     working_dir: /app/authnz_api
-    command: "cp /db/authnz.db /app/authnz_api/authnz.db ; /app/authnz_api/authnz-api.sh"
-    depends_on:
-      - populate-authnz-api-db
+    command: "/app/authnz_api/populate-db.sh"
+
+volumes:
+  authnz-db:
 

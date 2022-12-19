@@ -1,4 +1,6 @@
-FROM python:3.10.8-alpine3.16
+
+##############################################
+FROM python:3.10.8-alpine3.16 AS base-deps
 
 # Work around traffic-inspection proxies
 COPY bundle.pem /etc/ssl/certs/ca-bundle.crt
@@ -23,9 +25,13 @@ COPY requirements.txt Makefile /app/${APP_NAME}/
 #RUN apk add --allow-untrusted --repository http://dl-cdn.alpinelinux.org/alpine/v3.16/main \
 
 RUN env | sort ; apk add \
-        curl make \
+        curl make sqlite \
     && make venv pip
 
 # Add authnz-db to the path
-ENV PATH=/app/${APP_NAME}:$PATH
+ENV PATH=/app/${APP_NAME}/authnz-db:$PATH
 
+##############################################
+FROM base-deps AS production
+
+COPY . /app/${APP_NAME}

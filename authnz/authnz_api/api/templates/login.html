@@ -6,10 +6,11 @@
       {% endfor %}
    {% endif %}
 {% endwith %}
-<form action="" method="post">
-   {{ form.hidden_tag() }}
+
+<form action="{{ url_for('routes.AuthNZ_Login') }}" method="post" role="form">
+   {{ form.csrf_token }}
    <div>
-      {{ form.username(placeholder="username",
+      {{ form.user_id(placeholder="user_id",
       style='width: 50%;
       font-weight: bold;
       padding: 12px 20px ;
@@ -17,7 +18,7 @@
       border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box') }}
-      {% for error in form.username.errors %}
+      {% for error in form.user_id.errors %}
       <p>{{ error }}</p>
       {% endfor %}
    </div>

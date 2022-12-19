@@ -4,7 +4,7 @@ from flask import jsonify
 #from app.api.errors import error_response
 
 from . import bp
-from . import basic_auth
+from ..basictokenauth import basic_auth, token_auth
 from ..models.user import User
 
 @bp.route('/tokens', methods=['POST'])

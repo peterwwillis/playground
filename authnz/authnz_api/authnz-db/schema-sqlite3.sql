@@ -4,6 +4,6 @@ CREATE TABLE user (
   name     TEXT NOT NULL,
   email    TEXT NOT NULL,
   password TEXT NOT NULL,
-  token    TEXT UNIQUE NOT NULL,
-  token_expiration TEXT NOT NULL
+  token    TEXT UNIQUE,
+  token_expiration TEXT
 );
