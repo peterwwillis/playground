@@ -34,6 +34,31 @@ services:
     depends_on:
       - populate-db
 
+  authnz-api-tests:
+    #image: authnz-api:latest
+    build:
+      context: authnz_api
+      dockerfile: Dockerfile
+      args:
+        - APP_NAME=authnz_api
+        - HTTP_PROXY
+        - NO_PROXY
+      target: base-deps
+    volumes:
+      - ./authnz_api/:/app/authnz_api/:ro
+    environment:
+      AUTHNZ_API_HOST: authnz-api
+      NO_PROXY: $NO_PROXY
+      HTTP_PROXY:
+      HTTPS_PROXY:
+      http_proxy:
+      https_proxy:
+    working_dir: /app/authnz_api
+    command: make tests
+    depends_on:
+      - authnz-api
+
+
   populate-db:
     #image: authnz-api:latest
     build:

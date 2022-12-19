@@ -10,12 +10,12 @@ services:
         - HTTP_PROXY
         - NO_PROXY
     ports:
-      - "7654:7654"
+    - "7654:7654"
     volumes:
-      - ./s3_api/:/app/s3_api/
-      - ./minio/certs/public.crt:/etc/ssl/certs/minio-s3.crt
-      - ./minio/certs/CAs/ca.crt:/etc/ssl/certs/minio-s3-ca.crt
-      - ./minio/certs/bundle.crt:/etc/ssl/certs/minio-s3-bundle.crt
+    - ./s3_api/:/app/s3_api/
+    - ./minio/certs/public.crt:/etc/ssl/certs/minio-s3.crt
+    - ./minio/certs/CAs/ca.crt:/etc/ssl/certs/minio-s3-ca.crt
+    - ./minio/certs/bundle.crt:/etc/ssl/certs/minio-s3-bundle.crt
     environment:
       FLASK_ADDRESS: "0.0.0.0"
       FLASK_PORT:    "7654"
@@ -28,17 +28,42 @@ services:
       SSL_CA_FILE:   "/etc/ssl/certs/minio-s3-ca.crt"
     working_dir: /app/
     command: /app/s3_api/s3-api.sh
+    depends_on:
+    - s3
+
+  s3-api-tests:
+    #image: s3-api:latest
+    build:
+      context: s3_api
+      dockerfile: Dockerfile
+      args:
+      - HTTP_PROXY
+      - NO_PROXY
+    volumes:
+    - ./s3_api/:/app/s3_api/
+    environment:
+      S3_API_HOST: s3-api
+      NO_PROXY: $NO_PROXY
+      HTTP_PROXY:
+      HTTPS_PROXY:
+      http_proxy:
+      https_proxy:
+    working_dir: /app/s3_api/
+    command: make tests
+    depends_on:
+    - s3-api
 
   s3:
     image: minio/minio
     ports:
-      - "9000:9000"
+    - "9000:9000"
     volumes:
-      - minio-storage:/data
-      - ./minio/:/root/.minio
+    - minio-storage:/data
+    - ./minio/:/root/.minio
     environment:
       MINIO_ACCESS_KEY:     "minio_access_key"
       MINIO_SECRET_KEY:     "minio_secret_key"
     command: server --certs-dir /root/.minio/certs --address ":9000" --console-address ":9001" /data
+
 volumes:
   minio-storage:

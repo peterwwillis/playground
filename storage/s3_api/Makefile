@@ -1,9 +1,14 @@
 
 DOCKER_IMAGE_NAME := s3-api:latest
 
+.PHONY: tests
+
 all: venv
 
 clean: venv-clean py-clean
+
+tests:
+	make -C tests
 
 venv:
 	command -v virtualenv || \

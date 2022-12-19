@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -eux
-CURLHOST="${CURLHOST:-127.0.0.1}"
-CURLPORT="${CURLPORT:-7654}"
+S3_API_HOST="${S3_API_HOST:-127.0.0.1}"
+S3_API_PORT="${S3_API_PORT:-7654}"
 
 tmpfile=""
 _cleanup () {
@@ -22,5 +22,5 @@ curl \
     -X PUT \
     -F "key=foobar" \
     -F "content=@$tmpfile" \
-    http://$CURLHOST:$CURLPORT/
+    http://$S3_API_HOST:$S3_API_PORT/
 
