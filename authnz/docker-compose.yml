@@ -28,7 +28,8 @@ services:
       SSL_CA_FILE:   "/etc/ssl/certs/lldap-s3-ca.crt"
       DB_FILE:       "/db/authnz.db"
       WORKERS_NUM:   "4"
-      THREADS_NUM:   "1"
+      THREADS_NUM:   "3"
+      FLASK_DEBUG:
     working_dir: /app/authnz_api
     command: "/app/authnz_api/authnz-api.sh"
     depends_on:
@@ -49,10 +50,11 @@ services:
     environment:
       AUTHNZ_API_HOST: authnz-api
       NO_PROXY: $NO_PROXY
-      HTTP_PROXY:
-      HTTPS_PROXY:
-      http_proxy:
-      https_proxy:
+      no_proxy: $NO_PROXY
+      HTTP_PROXY: ""
+      HTTPS_PROXY: ""
+      http_proxy: ""
+      https_proxy: ""
     working_dir: /app/authnz_api
     command: make tests
     depends_on:

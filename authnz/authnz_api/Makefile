@@ -2,9 +2,14 @@
 APP_NAME := $(shell sh -c 'basename $$(pwd)')
 VENV := ../venv-$(APP_NAME)
 
+.PHONY: tests
+
 all: pip format lint
 
 clean: venv-clean py-clean
+
+tests:
+	make -C tests
 
 venv:
 	command -v virtualenv || \

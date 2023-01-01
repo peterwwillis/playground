@@ -12,9 +12,14 @@ token="$(0000-get-login-csrf.sh "$@")"
 user_id="test1"
 password="password1"
 
-curl -s \
+curl -vvv \
+    -c "/tmp/cookies.txt" \
+    -b "/tmp/cookies.txt" \
     -F "csrf_token=$token" \
     -F "user_id=$user_id" \
     -F "password=$password" \
     "http://$AUTHNZ_API_HOST:$AUTHNZ_API_PORT/login" \
     "$@"
+
+echo "Cookies:"
+cat /tmp/cookies.txt

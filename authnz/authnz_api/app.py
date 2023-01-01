@@ -4,9 +4,9 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from api import create_app
 
 def run():
-    debug = os.environ.get('APP_DEBUG', False)
-    host = os.environ.get('LISTEN_ADDRESS')
-    port = int(os.environ.get('LISTEN_PORT'))
+    #debug = os.environ.get('APP_DEBUG', False)
+    #host = os.environ.get('LISTEN_ADDRESS')
+    #port = int(os.environ.get('LISTEN_PORT'))
 
     app = create_app()
 
