@@ -25,8 +25,10 @@ COPY requirements.txt Makefile /app/${APP_NAME}/
 #RUN apk add --allow-untrusted --repository http://dl-cdn.alpinelinux.org/alpine/v3.16/main \
 
 RUN env | sort ; apk add \
-        curl make sqlite \
-    && make venv pip
+        curl make sqlite libev-dev py3-libevdev \
+    && apk add --virtual .build-deps gcc musl-dev libc-dev linux-headers \
+    && make venv pip \
+    && apk del .build-deps
 
 # Add authnz-db to the path
 ENV PATH=/app/${APP_NAME}/authnz-db:$PATH

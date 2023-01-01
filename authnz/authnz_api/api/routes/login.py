@@ -10,11 +10,11 @@ from ..models.user import User
 def AuthNZ_Login():
     form = LoginForm()
     import pprint
-    pprint.pprint(request.form, stream=sys.stderr)
-    pprint.pprint(vars(form), stream=sys.stderr)
-    tkn='_csrf'
-    if tkn in form:
-        print("csrf_token '%s'" % form.tkn, file=sys.stderr)
+    #pprint.pprint(request.form, stream=sys.stderr)
+    #pprint.pprint(vars(form), stream=sys.stderr)
+    #tkn='csrf_token'
+    #if tkn in form:
+    #    print("csrf_token '%s'" % form.tkn, file=sys.stderr)
     if form.validate_on_submit():
         user = User.get(user_id=form.user_id.data)
         print("got user '%s'" % user, file=sys.stderr)

@@ -18,12 +18,20 @@ venv="${VENV_DIR:-$(cd "../venv-${APP_NAME}" && pwd -P)}"
 #    --preload \
 
 set -x
-exec "$venv/bin/gunicorn" \
-    --workers="$WORKERS_NUM" \
-    -b "$LISTEN_ADDRESS:$LISTEN_PORT" \
-    --reload \
-    --reload-engine=inotify \
-    --threads="$THREADS_NUM" \
-    --access-logfile=- \
-    "app:run()" \
+
+if [ "${WSGI_SERVER:-}" = "gunicorn" ] ; then
+    exec "$venv/bin/gunicorn" \
+        --workers="$WORKERS_NUM" \
+        -b "$LISTEN_ADDRESS:$LISTEN_PORT" \
+        --reload \
+        --reload-engine=inotify \
+        --threads="$THREADS_NUM" \
+        --access-logfile=- \
+        "app:run()" \
+        "$@"
+else
+    exec "$venv/bin/python3" \
+    "./app.py" \
     "$@"
+fi
+
