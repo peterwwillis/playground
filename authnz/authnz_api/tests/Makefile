@@ -1,10 +1,14 @@
-tests: tests-env 0000-get-login-csrf 0010-submit-form
+tests: tests-env \
+		0000-get-login-csrf \
+		0010-login-user \
+		0020-logout-user
 
 tests-env:
 	env | sort
 
 0000-get-login-csrf:
 	./0000-get-login-csrf.sh
-
-0010-submit-form:
-	./0010-submit-form.sh
+0010-login-user:
+	./0010-login-user.sh
+0020-logout-user:
+	./0020-logout-user.sh

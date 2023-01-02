@@ -1,5 +1,7 @@
+
 import sys
-from flask import Blueprint, render_template, flash, request
+
+from flask import Blueprint, render_template, flash, request, redirect, url_for
 from flask_login import login_user
 
 from . import bp
@@ -20,10 +22,11 @@ def AuthNZ_Login():
         print("got user '%s'" % user, file=sys.stderr)
         if user is not None:
             if User.check_password(form.user_id.data, form.password.data) is not None:  # noqa
+                print("login_user(user)")
                 login_user(user)
                 flash('Logged in successfully.')
                 next = request.args.get("next")
-                return redirect(next or url_for("/"))
+                return redirect(next or url_for("routes.AuthNZ_Home"))
         flash("Invalid email address or Password.")
     return render_template("login.html", form=form)
     # request_uri = request.host + "/login/callback"

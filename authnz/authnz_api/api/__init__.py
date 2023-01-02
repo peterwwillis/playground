@@ -1,13 +1,14 @@
 
 import os
 
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask #, render_template, redirect, request, url_for
 from flask_login import (
     LoginManager,
 )
 from flask_wtf.csrf import CSRFProtect
 
 from .routes import bp as routes_bp
+from .models.user import User
 
 
 login_manager = LoginManager()
@@ -16,6 +17,7 @@ csrf = CSRFProtect()
 
 @login_manager.user_loader
 def load_user(user_id):
+    print("load_user()")
     return User.get(user_id=user_id)
 
 def create_app(app_name=__name__):
@@ -25,7 +27,7 @@ def create_app(app_name=__name__):
     #host = os.environ.get('LISTEN_ADDRESS')
     #port = int(os.environ.get('LISTEN_PORT'))
 
-    os.environ['DEBUG']='development'
+    #os.environ['DEBUG']='development'
     os.environ['FLASK_DEBUG']='True'
     os.environ['TRAP_HTTP_EXCEPTIONS']='True'
 
@@ -33,7 +35,7 @@ def create_app(app_name=__name__):
         SECRET_KEY=os.environ.get("SECRET_KEY") or os.urandom(24),
         #DEBUG=os.environ.get("FLASK_DEBUG", True),
         FLASK_DEBUG=True,
-        DEBUG='development',
+        #DEBUG='development',
         TESTING=True,
         TRAP_HTTP_EXCEPTIONS=True
         # set SERVER_NAME

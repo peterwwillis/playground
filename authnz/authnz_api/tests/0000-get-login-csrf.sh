@@ -1,9 +1,11 @@
 #!/usr/bin/env sh
-set -eux
+set -eu
+[ "${DEBUG:-0}" = "1" ] && set -x && CURLVERBOSE="-vvv"
+
 AUTHNZ_API_HOST="${AUTHNZ_API_HOST:-127.0.0.1}"
 AUTHNZ_API_PORT="${AUTHNZ_API_PORT:-7652}"
 
-curl -vvv \
+curl ${CURLVERBOSE:-} \
     -c "/tmp/cookies.txt" \
     -b "/tmp/cookies.txt" \
     "http://$AUTHNZ_API_HOST:$AUTHNZ_API_PORT/login" \

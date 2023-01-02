@@ -17,6 +17,12 @@ class User(UserMixin):
         self.token = None
         self.token_expiration = None
 
+    def get_id(self):
+        try:
+            return str(self.user_id)
+        except:
+            return None
+
     @staticmethod
     def get(user_id=None,token=None):
         print("running User.get(user_id='%s',token='%s')" % (user_id,token), file=sys.stderr)

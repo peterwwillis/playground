@@ -2,9 +2,9 @@
 APP_NAME := $(shell sh -c 'basename $$(pwd)')
 VENV := ../venv-$(APP_NAME)
 
-.PHONY: tests
+.PHONY: bundle docker-build tests
 
-all: pip format lint
+all: bundle pip format lint
 
 clean: venv-clean py-clean
 
@@ -12,8 +12,9 @@ tests:
 	make -C tests
 
 venv:
-	command -v virtualenv || \
-        pip3 install virtualenv
+	if ! command -v virtualenv ; then \
+        pip3 install virtualenv ; \
+	fi
 	[ -d $(VENV) ] || virtualenv $(VENV)
 
 venv-clean:
@@ -34,3 +35,10 @@ lint:
 DOCKER_IMAGE_NAME := $(APP_NAME):latest
 docker-build:
 	docker build -t $(DOCKER_IMAGE_NAME) .
+
+bundle:
+	if [ ! -e bundle.pem ] ; then \
+		if [ -e /etc/ssl/cert.pem ] ; then \
+			cp /etc/ssl/cert.pem bundle.pem ; \
+		fi ; \
+	fi
