@@ -10,9 +10,9 @@
 <div>
   <a href="{{ url_for('routes.AuthNZ_Home') }}">Home</a>
   {% if current_user.is_anonymous %}
-  <a href="{{ url_for('routes.AuthNZ_Login') }}">Login</a>
+    <a href="{{ url_for('routes.AuthNZ_Login') }}">Login</a>
   {% else %}
-  <p>Welcome {{current_user.user_id}}</p>
-  <a href="{{ url_for('routes.AuthNZ_Logout') }}">Logout</a>
+    <p>Welcome {{current_user.user_id}}</p>
+    <a href="{{ url_for('routes.AuthNZ_Logout') }}">Logout</a>
   {% endif %}
 </div>
