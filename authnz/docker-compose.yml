@@ -48,6 +48,7 @@ services:
     volumes:
       - ./authnz_api/:/app/authnz_api/:ro
     environment:
+      DEBUG:
       AUTHNZ_API_HOST: authnz-api
       NO_PROXY: $NO_PROXY
       no_proxy: $NO_PROXY

@@ -1,5 +1,6 @@
 
 import os
+import sys
 
 from flask import Flask #, render_template, redirect, request, url_for
 from flask_login import (
@@ -17,7 +18,7 @@ csrf = CSRFProtect()
 
 @login_manager.user_loader
 def load_user(user_id):
-    print("load_user()")
+    print("load_user()", file=sys.stderr)
     return User.get(user_id=user_id)
 
 def create_app(app_name=__name__):

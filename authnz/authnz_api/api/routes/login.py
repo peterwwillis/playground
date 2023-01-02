@@ -22,7 +22,7 @@ def AuthNZ_Login():
         print("got user '%s'" % user, file=sys.stderr)
         if user is not None:
             if User.check_password(form.user_id.data, form.password.data) is not None:  # noqa
-                print("login_user(user)")
+                print("login_user(user)", file=sys.stderr)
                 login_user(user)
                 flash('Logged in successfully.')
                 next = request.args.get("next")

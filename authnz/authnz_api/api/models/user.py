@@ -32,7 +32,7 @@ class User(UserMixin):
             js = json.loads(res.stdout)
             print("js: '%s'" % js, file=sys.stderr)
             foo = User().populate(js[0])
-            print("foo: '%s'" % foo, file=sys.stderr)
+            #print("foo: '%s'" % foo, file=sys.stderr)
             return foo
 
         # get user_id from token

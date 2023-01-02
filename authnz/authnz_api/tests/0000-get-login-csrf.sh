@@ -5,7 +5,7 @@ set -eu
 AUTHNZ_API_HOST="${AUTHNZ_API_HOST:-127.0.0.1}"
 AUTHNZ_API_PORT="${AUTHNZ_API_PORT:-7652}"
 
-curl ${CURLVERBOSE:-} \
+curl ${CURLVERBOSE:-} -s \
     -c "/tmp/cookies.txt" \
     -b "/tmp/cookies.txt" \
     "http://$AUTHNZ_API_HOST:$AUTHNZ_API_PORT/login" \
