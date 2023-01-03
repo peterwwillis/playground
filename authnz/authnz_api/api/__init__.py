@@ -16,6 +16,39 @@ login_manager = LoginManager()
 csrf = CSRFProtect()
 
 
+@login_manager.unauthorized_handler
+def unauthorized_handler():
+    return 'Unauthorized', 401
+
+@login_manager.request_loader
+def load_user_from_request(request):
+
+    # first, try to login using the api_key url arg
+    token = request.args.get('token')
+    if token:
+        printf("found token '%s'" % token, file=sys.stderr)
+        user = User.query.filter_by(token=token).first()
+        printf("found user '%s'" % user, file=sys.stderr)
+        if user:
+            return user
+
+    # next, try to login using Basic Auth
+    token = request.headers.get('Authorization')
+    if token:
+        printf("found token '%s'" % token, file=sys.stderr)
+        token = token.replace('Basic ', '', 1)
+        try:
+            token = base64.b64decode(token)
+        except TypeError:
+            pass
+        user = User.query.filter_by(token=token).first()
+        printf("found user '%s'" % user, file=sys.stderr)
+        if user:
+            return user
+
+    # finally, return None if both methods did not login the user
+    return None
+
 @login_manager.user_loader
 def load_user(user_id):
     print("load_user()", file=sys.stderr)
